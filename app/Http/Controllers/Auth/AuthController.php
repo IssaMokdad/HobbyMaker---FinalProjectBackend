@@ -139,6 +139,9 @@ class AuthController extends Controller
         $token->save();
 
         return response()->json([
+            'user_id' =>$user->id,
+            'first_name' =>$user->first_name,
+            'last_name' => $user->last_name,
             'message'      => __('auth.login_success'),
             'access_token' => $tokenResult->accessToken,
             'token_type' => 'Bearer',

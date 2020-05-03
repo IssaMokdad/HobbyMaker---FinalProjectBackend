@@ -47,7 +47,19 @@ return [
             'driver' => 'local',
             'root' => storage_path('app'),
         ],
-
+        // 'ftp' => [
+        //     'driver'   => 'ftp',
+        //     'host'     => 'http://localhost:3000/home',
+        //     'username' => 'your-username',
+        //     'password' => 'your-password',
+        
+        //     // Optional FTP Settings...
+        //     // 'port'     => 21,
+        //     // 'root'     => '',
+        //     // 'passive'  => true,
+        //     // 'ssl'      => true,
+        //     // 'timeout'  => 30,
+        // ],
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

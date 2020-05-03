@@ -41,7 +41,8 @@ class PasswordResetController extends Controller
 
         $passwordReset = PasswordReset::updateOrCreate(['email' => $user->email], [
             'email' => $user->email,
-            'token' => Str::random(60)
+            'token' => Str::random(60),
+            'user_id' =>$user->id
         ]);
 
         if ($user && $passwordReset)
@@ -93,7 +94,6 @@ class PasswordResetController extends Controller
 
         $validator  =   Validator::make($request->all(),
         [
-            'email' => 'required|string|email',
             'password' => 'required|string|confirmed',
             'token' => 'required|string'
         ]
@@ -104,8 +104,9 @@ class PasswordResetController extends Controller
     }
             
         $passwordReset = PasswordReset::where([
+            
             ['token', $request->token],
-            ['email', $request->email]
+
         ])->first();
 
         if (!$passwordReset)

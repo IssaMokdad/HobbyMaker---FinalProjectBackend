@@ -20,3 +20,20 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 require __DIR__ . '/auth/auth.php';
 require __DIR__ . '/auth/passwordReset.php';
+
+//--------------------Posts Api Routes-----------------------------------------
+Route::group([
+    'middleware' => 'auth:api'
+], function() {
+    Route::post('post/create', 'PostController@add');
+    Route::get('post/get', 'PostController@get');
+});
+
+//--------------------Likes Api Routes-----------------------------------------------
+
+Route::group([
+    'middleware' => 'auth:api'
+], function() {
+    Route::post('like/create', 'LikesController@add');
+    Route::post('like/remove', 'LikesController@remove');
+});

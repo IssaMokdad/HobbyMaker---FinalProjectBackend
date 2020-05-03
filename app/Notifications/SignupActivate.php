@@ -40,7 +40,7 @@ class SignupActivate extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        $url = url('http://localhost:3000/api/auth/signup/activate/'.$notifiable->activation_token);
+        $url = url('http://localhost:3000/confirm-registration/'.$notifiable->activation_token);
 
         return (new MailMessage)
                     ->subject(__('auth.email_signup_activate_subject'))
