@@ -18,6 +18,25 @@ class CommentsController extends Controller
         return CommentResource::collection(Comments::where('post_id',$request->input('post-id'))->get());
 
     }
+
+    public function remove(Request $request){
+        $validator = Validator::make($request->all(), [
+            'id' => ['required', 'integer', 'min:1'],
+            'post_id' => ['required', 'integer', 'min:1'],
+            'user_id' => ['required', 'integer', 'min:1'],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->messages(), 419);
+        }
+
+        Comments::where('user_id',$request->input('user_id'))
+        ->where('post_id', $request->input('post_id'))
+        ->where('id', $request->input('id'))
+        ->delete();
+        return new PostResource(Post::find($request->input('post_id')));
+    }
+
     public function create(Request $request)
     {
         // var_dump(json_decode($request->json()->all()));
@@ -32,6 +51,7 @@ class CommentsController extends Controller
         if ($validator->fails()) {
             return response()->json($validator->messages(), 419);
         }
+
         $comment = Comments::create([
             'comment' => $request->input('comment'),
             'post_id' => $request->input('post_id'),

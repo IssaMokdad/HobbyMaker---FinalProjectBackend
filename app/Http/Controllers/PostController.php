@@ -103,7 +103,7 @@ class PostController extends Controller
             $post = Post::where('id', $request->input('post_id'))->where('user_id', $request->input('user_id'))
                 ->update(['content' => $request->input('content'), 'image' => $filename]);
             if ($post) {
-                return response()->json(['post' => $post]);
+                return response()->json(['message' => 'success']);
             } else {
                 return response()->json(['message' => 'error']);
             }
@@ -122,7 +122,7 @@ class PostController extends Controller
             $post = Post::where('id', $request->input('post_id'))->where('user_id', $request->input('user_id'))
                 ->update(['content' => $request->input('content')]);
             if ($post) {
-                return response()->json(['post' => $post]);
+                return response()->json(['message' => 'success']);
             } else {
                 return response()->json(['message' => 'error']);
             }
