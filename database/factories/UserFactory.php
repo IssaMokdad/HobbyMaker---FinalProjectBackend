@@ -22,7 +22,9 @@ $factory->define(User::class, function (Faker $faker) {
         'first_name' => $faker->name,
         'last_name' => $faker->name,
         'country' => $faker->country,
-        'city' => $faker->state,
+        // $faker->country
+        'city' => 'Beirut',
+        // $faker->state,
         'gender' => $faker->randomElement(['male', 'female']),
         'birthday'=>$faker->date($format = 'Y-m-d', $max = 'now'),
         'email' => $faker->unique()->safeEmail,

@@ -1,0 +1,10 @@
+1. Facebook login
+2. Gmail login
+3. Contact list
+4. Add contact to friendlist.
+5. Confirm or reject friend request.
+6. Realtime notification on sending and accepting friend request.
+7. Realtime chat system with friends
+20thhhh May is the deadline
+
+contact.lutforrahman@gmail.com

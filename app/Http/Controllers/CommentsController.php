@@ -3,14 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Comments;
+use App\Http\Resources\Comment as CommentResource;
+use App\Http\Resources\Post as PostResource;
 use App\Post;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class CommentsController extends Controller
 {
-    public function add(Request $request)
+
+    public function show(Request $request)
+    {
+        
+        return CommentResource::collection(Comments::where('post_id',$request->input('post-id'))->get());
+
+    }
+    public function create(Request $request)
     {
         // var_dump(json_decode($request->json()->all()));
 
@@ -18,7 +26,7 @@ class CommentsController extends Controller
         $validator = Validator::make($request->all(), [
             'comment' => ['required', 'string', 'max:255'],
             'post_id' => ['required', 'integer', 'min:1'],
-            'user_id' => ['required', 'integer', 'min:1']
+            'user_id' => ['required', 'integer', 'min:1'],
         ]);
 
         if ($validator->fails()) {
@@ -30,12 +38,10 @@ class CommentsController extends Controller
             'user_id' => $request->input('user_id'),
         ]);
 
-        $comment = $comment->fresh();
         // $datas=[];
         // array_push($datas, $data, ['id'=>Auth::id()]);
-        $commentTotal = Post::find($request->input('post_id'));
-        $commentTotal = $commentTotal->comments->count();
-        return response()->json(['comment' => $comment, 'commentTotal' => $commentTotal]);
+
+        return new PostResource(Post::find($request->input('post_id')));
         // return response()->json(['foo'=>'bar']);
     }
 }

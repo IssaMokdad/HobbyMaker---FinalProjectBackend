@@ -1,105 +1,152 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Post;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Http\Request;
-use DB;
-use App\User;
+
 use App\Http\Resources\Post as PostResource;
+use App\Post;
+use App\User;
+use Validator;
+use Image;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
+
 class PostController extends Controller
 {
 
-    public function get(Request $request){
-
-        $friendsIds = array_column(User::find(1)->friend->toArray(), 'friend_id');
-
-        return PostResource::collection(Post::orderBy('id', 'desc')->whereIn('user_id',$friendsIds)->take(10)->get());
+    public function get(Request $request)
+    {
+        //Get the latest posts of the authenticated user and his/her friends. Also, onEachBottomScroll, we send 5 more posts 
+        $friendsIds = array_column(User::find($request->input('user_id'))->friend->toArray(), 'friend_id');
+        $friendsIds[] = $request->input('user_id');
+        return PostResource::collection(Post::orderBy('id', 'desc')->whereIn('user_id', $friendsIds)->take($request->input('page')*5)->get());
 
     }
-    public function add(Request $request){
-
+    public function add(Request $request)
+    {
 
         if ($request->hasFile('image')) {
-            $request->validate([
-                'title' => ['required', 'max:255'],
+
+
+
+            $validator = Validator::make($request->all(), [
                 'content' => 'required',
                 'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-                'user_id'=>['required', 'integer']
+                'user_id' => ['required', 'integer', 'min:1'],
             ]);
+    
+            if ($validator->fails()) {
+                return response()->json($validator->messages(), 419);
+            }
+
+
+
+
+            // $file = $request->file('image');
+            // $extension = $file->getClientOriginalExtension();
+            // $filename = time() . "." . $extension;
+            // $file->move('images/', $filename);
+
+            $filename = date('Y-m-d-H-i-s').'userid='.$request->input('user_id').'.'.$request->file('image')->getClientOriginalExtension();
+            Image::make($request->file('image')->getRealPath())->resize(468, 249)->save(public_path('images/'.$filename));
+            
+            // $thumbnailpath = public_path('storage/profile_images/thumbnail/'.$filenametostore);
+            // $img = Image::make($thumbnailpath)->resize(400, 150, function($constraint) {
+            //     $constraint->aspectRatio();
+            // });
+
+
+            $post = Post::create([
+                'user_id' => $request->input('user_id'),
+                'content' => $request->input('content'),
+                'image' => $filename,
+            ]);
+            return response()->json(['post' => $post]);} 
+            else {
+
+            $validator = Validator::make($request->all(), [
+                'content' => 'required',
+                'user_id' => ['required', 'integer', 'min:1'],
+            ]);
+    
+            if ($validator->fails()) {
+                return response()->json($validator->messages(), 419);
+            }
+
+            $post = Post::create([
+                'user_id' => $request->input('user_id'),
+                'content' => $request->input('content'),
+            ]);
+            return response()->json(['post' => $post]);
+        }
+    }
+
+    public function edit(Request $request)
+    {
+        if ($request->hasFile('image')) {
+
+
+            $validator = Validator::make($request->all(), [
+                'content' => 'required',
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'user_id' => ['required', 'integer', 'min:1'],
+                'post_id' => ['required', 'integer', 'min:1'],
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json($validator->messages(), 419);
+            }
+
             $file = $request->file('image');
             $extension = $file->getClientOriginalExtension();
             $filename = time() . "." . $extension;
             $file->move('images/', $filename);
-            $post = Post::create([
-                'user_id' => $request->input('user_id'),
-                'content' => $request->input('content'),
-                'title' => $request->input('title'),
-                'image'=>$filename,
-            ]);
-            return response()->json(['post'=>$post]);}
-            else{
-                $request->validate([
-                    'title' => ['required', 'max:255'],
-                    'content' => 'required',
-                ]);
-                $post = Post::create([
-                    'user_id' => $request->input('user_id'),
-                    'content' => $request->input('content'),
-                    'title' => $request->input('title'),
-                ]);
-                return response()->json(['post'=>$post]);
+            $post = Post::where('id', $request->input('post_id'))->where('user_id', $request->input('user_id'))
+                ->update(['content' => $request->input('content'), 'image' => $filename]);
+            if ($post) {
+                return response()->json(['post' => $post]);
+            } else {
+                return response()->json(['message' => 'error']);
             }
-        }
+        } else {
 
-    public function edit(Request $request){
-        if ($request->hasFile('image')){
-                $request->validate([
-                    'title' => ['required', 'max:255'],
-                    'content' => 'required',
-                    'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-                ]);
-                $file = $request->file('image');
-                $extension = $file->getClientOriginalExtension();
-                $filename = time() . "." . $extension;
-                $file->move('images/', $filename);
-            $post = Post::where('id',$request->input('id') )->where('user_id', $request->input('user_id'))
-            ->update(['title' => $request->input('title'), 'content'=>$request->input('content'), 'image'=>$filename]);
-            if($post){
-                return response()->json(['post'=>$post]);
-            }
-             else{
-                return response()->json(['message'=>'error']);
-             }
-        }
-        else{
-            $request->validate([
-                'title' => ['required', 'max:255'],
+            $validator = Validator::make($request->all(), [
                 'content' => 'required',
-                'id'      => 'required',
+                'user_id' => ['required', 'integer', 'min:1'],
+                'post_id' => ['required', 'integer', 'min:1'],
             ]);
-            $post = Post::where('id',$request->input('id') )->where('user_id', $request->input('user_id'))
-            ->update(['title' => $request->input('title'), 'content'=>$request->input('content')]);
-            if($post){
-                return response()->json(['post'=>$post]);
+
+            if ($validator->fails()) {
+                return response()->json($validator->messages(), 419);
             }
-             else{
-                return response()->json(['message'=>'error']);
-             }
+
+            $post = Post::where('id', $request->input('post_id'))->where('user_id', $request->input('user_id'))
+                ->update(['content' => $request->input('content')]);
+            if ($post) {
+                return response()->json(['post' => $post]);
+            } else {
+                return response()->json(['message' => 'error']);
+            }
         }
-
-
 
     }
 
-    public function delete(Request $request){
-        $request->validate([
-            'id' => ['required'],
+    public function delete(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'post_id' => ['required', 'integer', 'min:1'],
+            'user_id' => ['required', 'integer', 'min:1'],
         ]);
-        Post::where('id',$request->input('id'))
-        ->delete();
-        return redirect(url('home'));
+
+        if ($validator->fails()) {
+            return response()->json($validator->messages(), 419);
+        }
+        $post = Post::where('id', $request->input('post_id'))->where('user_id', $request->input('user_id'))
+            ->delete();
+        if($post){
+            return response()->json(['message' => 'success']);
+        }
+        else{
+            return response()->json(['message' => 'error']);
+        }
     }
 }
