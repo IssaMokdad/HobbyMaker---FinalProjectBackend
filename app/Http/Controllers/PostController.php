@@ -21,6 +21,12 @@ class PostController extends Controller
         return PostResource::collection(Post::orderBy('id', 'desc')->whereIn('user_id', $friendsIds)->take($request->input('page')*5)->get());
 
     }
+
+    public function getUserPosts(Request $request){
+        
+        return PostResource::collection(Post::orderBy('id', 'desc')->where('user_id', $request->input('user_id'))->take($request->input('page')*5)->get());
+    }
+
     public function add(Request $request)
     {
 

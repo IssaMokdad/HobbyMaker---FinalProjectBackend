@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use App\User;
 use Illuminate\Http\Request;
 use DB;
+use Image;
+use Validator;
 use App\Http\Resources\User as UserResource;
 
 class UserController extends Controller
@@ -36,4 +38,54 @@ class UserController extends Controller
     public function getUserInfo(Request $request){
         return new UserResource(User::find($request->input('user-id')));
     }
+
+    public function saveProfilePicture(Request $request){
+
+
+            $validator = Validator::make($request->all(), [
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'user_id' => ['required', 'integer', 'min:1'],
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json($validator->messages(), 419);
+            }
+
+            $filename = date('Y-m-d-H-i-s').'userid='.$request->input('user_id').'.'.$request->file('image')->getClientOriginalExtension();
+            Image::make($request->file('image')->getRealPath())->resize(150, 150)->save(public_path('images/'.$filename));
+
+            $user = User::where('id', $request->input('user_id'))
+                ->update(['image' => $filename]);
+            if ($user) {
+                return response()->json(['message' => 'success']);
+            } else {
+                return response()->json(['message' => 'error']);
+            }
+        
+    }
+
+    public function saveCoverPicture(Request $request){
+
+
+        $validator = Validator::make($request->all(), [
+            'cover_photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'user_id' => ['required', 'integer', 'min:1'],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->messages(), 419);
+        }
+
+        $filename = date('Y-m-d-H-i-s').'userid='.$request->input('user_id').'.'.$request->file('cover_photo')->getClientOriginalExtension();
+        Image::make($request->file('cover_photo')->getRealPath())->resize(1158, 250)->save(public_path('images/'.$filename));
+
+        $user = User::where('id', $request->input('user_id'))
+            ->update(['cover_photo' => $filename]);
+        if ($user) {
+            return response()->json(['message' => 'success']);
+        } else {
+            return response()->json(['message' => 'error']);
+        }
+    
+}
 }

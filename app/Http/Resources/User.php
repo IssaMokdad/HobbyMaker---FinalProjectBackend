@@ -18,10 +18,15 @@ class User extends JsonResource
             'id' => $this->id,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
-            'hobby' => $this->hobby,
             'country' => $this->country,
             'city'   => $this->city,
-            'birthday' => $this->birthday
+            'birthday' => $this->birthday,
+            'posts'=>$this->post,
+            'image'=>$this->image,
+            'cover-photo'=>$this->coverphoto,
+            'avatar'=>$this->avatar,
+            'hobbies'=>$this->hobby,
+            'friends'=>$this->friend
         ];
     }
 }

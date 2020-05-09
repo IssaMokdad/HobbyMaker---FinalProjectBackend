@@ -14,12 +14,13 @@ class CommentsController extends Controller
 
     public function show(Request $request)
     {
-        
-        return CommentResource::collection(Comments::where('post_id',$request->input('post-id'))->get());
+
+        return CommentResource::collection(Comments::where('post_id', $request->input('post-id'))->get());
 
     }
 
-    public function remove(Request $request){
+    public function remove(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'id' => ['required', 'integer', 'min:1'],
             'post_id' => ['required', 'integer', 'min:1'],
@@ -30,10 +31,10 @@ class CommentsController extends Controller
             return response()->json($validator->messages(), 419);
         }
 
-        Comments::where('user_id',$request->input('user_id'))
-        ->where('post_id', $request->input('post_id'))
-        ->where('id', $request->input('id'))
-        ->delete();
+        Comments::where('user_id', $request->input('user_id'))
+            ->where('post_id', $request->input('post_id'))
+            ->where('id', $request->input('id'))
+            ->delete();
         return new PostResource(Post::find($request->input('post_id')));
     }
 
@@ -63,5 +64,36 @@ class CommentsController extends Controller
 
         return new PostResource(Post::find($request->input('post_id')));
         // return response()->json(['foo'=>'bar']);
+    }
+
+    public function edit(Request $request)
+    {
+        // var_dump(json_decode($request->json()->all()));
+
+        // $data = $request->json()->all();
+        $validator = Validator::make($request->all(), [
+            'id' => ['required', 'integer', 'min:1'],
+            'comment' => ['required', 'string', 'max:255'],
+            'post_id' => ['required', 'integer', 'min:1'],
+            'user_id' => ['required', 'integer', 'min:1'],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->messages(), 419);
+        }
+
+        $comment = Comments::where('id', $request->input('id'))
+            ->where('user_id', $request->input('user_id'))
+            ->where('post_id', $request->input('post_id'))
+            ->update(['comment' => $request->input('comment')]);
+
+        if ($comment) {
+            return new PostResource(Post::find($request->input('post_id')));
+        } else {
+            return response()->json(['message' => 'error']);
+        }
+
+        
+
     }
 }

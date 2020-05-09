@@ -26,7 +26,9 @@ Route::group([
     'middleware' => 'auth:api'
 ], function() {
     Route::post('post/create', 'PostController@add');
+    Route::get('post/get-one-post', 'PostController@getOnePost');
     Route::get('post/get', 'PostController@get');
+    Route::get('post/get-user-post', 'PostController@getUserPosts');
     Route::post('post/delete', 'PostController@delete');
     Route::post('post/edit', 'PostController@edit');
 });
@@ -48,6 +50,7 @@ Route::group([
     Route::post('comment/create', 'CommentsController@create');
     Route::get('comment/show', 'CommentsController@show');
     Route::post('comment/remove', 'CommentsController@remove');
+    Route::post('comment/edit', 'CommentsController@edit');
 });
 
 //---------------------Users Api Routes-----------------------------------------------
@@ -55,8 +58,11 @@ Route::group([
 Route::group([
     'middleware' => 'auth:api'
 ], function() {
+    
     Route::get('users/get-recommendations', 'UserController@getUsersWithSameHobbyAndAddress');
     Route::get('user/get-info', 'UserController@getUserInfo');
+    Route::post('user/save-profile-picture', 'UserController@saveProfilePicture');
+    Route::post('user/save-cover-picture', 'UserController@saveCoverPicture');
 });
 
 //---------------------Friends Api Routes----------------------------------------------
