@@ -58,7 +58,8 @@ Route::group([
 Route::group([
     'middleware' => 'auth:api'
 ], function() {
-    
+    Route::post('user/password-change', 'UserController@changePassword');
+    Route::post('user/info-change', 'UserController@editUserInfo');
     Route::get('users/get-recommendations', 'UserController@getUsersWithSameHobbyAndAddress');
     Route::get('user/get-info', 'UserController@getUserInfo');
     Route::post('user/save-profile-picture', 'UserController@saveProfilePicture');

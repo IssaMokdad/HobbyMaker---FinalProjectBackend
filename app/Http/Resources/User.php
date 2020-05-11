@@ -23,7 +23,7 @@ class User extends JsonResource
             'birthday' => $this->birthday,
             'posts'=>$this->post,
             'image'=>$this->image,
-            'cover-photo'=>$this->coverphoto,
+            'cover_photo'=>$this->cover_photo,
             'avatar'=>$this->avatar,
             'hobbies'=>$this->hobby,
             'friends'=>$this->friend

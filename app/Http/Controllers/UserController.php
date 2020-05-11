@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\User;
+use App\Hobby;
 use Illuminate\Http\Request;
 use DB;
 use Image;
@@ -20,7 +21,6 @@ class UserController extends Controller
         $friendsIds = array_column($user->friend->toArray(), 'friend_id');
 
         $userHobbies = array_column($user->hobby->toArray(), 'hobby');
-
         $friendsIds[] = $request->input('user_id');
 
         $users = DB::table('users')
@@ -29,9 +29,8 @@ class UserController extends Controller
         ->where('users.city',$user->city)
         ->whereIn('hobbies.hobby', $userHobbies)
         ->whereNotIn('users.id', $friendsIds )
-        ->select('users.id','hobbies.hobby','users.first_name','users.last_name')
+        ->select('users.id','users.birthday','hobbies.hobby','users.first_name','users.last_name', 'users.image')
         ->get();
-
         return response()->json(['data'=>$users]);
     }
 
@@ -88,4 +87,77 @@ class UserController extends Controller
         }
     
 }
+
+    public function changePassword(Request $request){
+        $validator  =   Validator::make($request->all(),
+        [
+            'password' => 'required|string|confirmed',
+            'user_id' => ['required', 'integer', 'min:1'],
+        ]
+    );
+
+    if($validator->fails()) {
+        return response()->json(['Validation errors' => $validator->errors()]);
+    }
+    $password = bcrypt($request->input('password'));
+    $user = User::find($request->input('user_id'));
+    $user->password = $password;
+    $user->save;
+    if($user->isDirty('password')){
+
+        return response()->json(['message' => 'success']);
+    } else {
+        return response()->json(['message' => 'error']);
+    }
+
+    }
+
+
+    public function editUserInfo(Request $request)
+    {
+
+
+
+            $validator = Validator::make($request->all(), [
+                'birthday' => ['required','date'],
+                'country' => ['required', 'string', 'max:50' ],
+                'city' => ['required', 'string', 'max:50' ],
+                'first_name' => ['required', 'string', 'max:50' ],
+                'last_name' => ['required', 'string', 'max:50' ],
+                'user_id' => ['required', 'integer', 'min:1'],
+                'hobby' => ['required', 'string', ],
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json($validator->messages(), 419);
+            }
+
+            $user = User::find($request->input('user_id'));
+            
+            if(sizeof($user->hobby)!==0){
+                $hobby = Hobby::where('user_id',$request->input('user_id'))
+            ->update(['hobby'=>$request->input('hobby')]);
+            }
+            else{
+                $hobby = Hobby::create([
+                    'user_id' => $request->input('user_id'),
+                    'hobby' => $request->input('hobby'),
+                ]);
+            }
+            $user = User::where('id', $request->input('user_id'))
+                ->update(['birthday' => $request->input('birthday'),'city' => $request->input('city'),'country' => $request->input('country'),'first_name' => $request->input('first_name'), 'last_name' => $request->input('last_name')]);
+            
+            // $hobby = Hobby::where('user_id',$request->input('user_id'))
+            // ->update(['hobby'=>$request->input('hobby')]);
+            
+            if ($user && $hobby) {
+                return response()->json(['message' => 'success']);
+            } else {
+                return response()->json(['message' => 'error']);
+            }
+        
+
+    }
+
+
 }

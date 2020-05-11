@@ -86,6 +86,8 @@ class AuthController extends Controller
 
         $user->active = true;
         $user->activation_token = '';
+        $user->image = 'default_profile_picture.png';
+        $user->cover_photo = 'default_cover_photo.jpg';
         $user->save();
 
         $user->notify(new SignupActivated($user));
