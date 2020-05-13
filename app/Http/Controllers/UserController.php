@@ -21,6 +21,7 @@ class UserController extends Controller
         $friendsIds = array_column($user->friend->toArray(), 'friend_id');
 
         $userHobbies = array_column($user->hobby->toArray(), 'hobby');
+
         $friendsIds[] = $request->input('user_id');
 
         $users = DB::table('users')
@@ -33,6 +34,9 @@ class UserController extends Controller
         ->get();
         return response()->json(['data'=>$users]);
     }
+
+
+
 
     public function getUserInfo(Request $request){
         return new UserResource(User::find($request->input('user-id')));
@@ -125,7 +129,7 @@ class UserController extends Controller
                 'first_name' => ['required', 'string', 'max:50' ],
                 'last_name' => ['required', 'string', 'max:50' ],
                 'user_id' => ['required', 'integer', 'min:1'],
-                'hobby' => ['required', 'string', ],
+                'hobby' => ['required', 'array', ],
             ]);
 
             if ($validator->fails()) {
@@ -133,17 +137,19 @@ class UserController extends Controller
             }
 
             $user = User::find($request->input('user_id'));
-            
-            if(sizeof($user->hobby)!==0){
-                $hobby = Hobby::where('user_id',$request->input('user_id'))
-            ->update(['hobby'=>$request->input('hobby')]);
-            }
-            else{
+            $hobbies = $request->input('hobby');
+            $length = count($hobbies);
+
+            Hobby::where('user_id',$request->input('user_id'))
+            ->delete();
+
+            for($i=0; $i<$length;$i++){                
                 $hobby = Hobby::create([
                     'user_id' => $request->input('user_id'),
-                    'hobby' => $request->input('hobby'),
+                    'hobby' => $hobbies[$i],
                 ]);
             }
+
             $user = User::where('id', $request->input('user_id'))
                 ->update(['birthday' => $request->input('birthday'),'city' => $request->input('city'),'country' => $request->input('country'),'first_name' => $request->input('first_name'), 'last_name' => $request->input('last_name')]);
             

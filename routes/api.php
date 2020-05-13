@@ -58,6 +58,7 @@ Route::group([
 Route::group([
     'middleware' => 'auth:api'
 ], function() {
+    Route::get('user/get-info', 'UserController@getUserInfo');
     Route::post('user/password-change', 'UserController@changePassword');
     Route::post('user/info-change', 'UserController@editUserInfo');
     Route::get('users/get-recommendations', 'UserController@getUsersWithSameHobbyAndAddress');
@@ -72,5 +73,11 @@ Route::group([
     'middleware' => 'auth:api'
 ], function() {
     Route::post('friend/add', 'FriendController@add');
-    Route::get('user/get-info', 'UserController@getUserInfo');
+    Route::post('friend/accept', 'FriendController@accept');
+    Route::post('friend/remove', 'FriendController@removeFriend');
+    Route::get('friend/get-friends', 'FriendController@getFriends');
+    Route::get('friend/get-friend-requests', 'FriendController@getFriendRequests');
+    Route::get('friend/get-pending-requests', 'FriendController@getPendingRequests');
+    
+    
 });
