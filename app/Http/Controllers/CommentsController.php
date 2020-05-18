@@ -40,9 +40,7 @@ class CommentsController extends Controller
 
     public function create(Request $request)
     {
-        // var_dump(json_decode($request->json()->all()));
 
-        // $data = $request->json()->all();
         $validator = Validator::make($request->all(), [
             'comment' => ['required', 'string', 'max:255'],
             'post_id' => ['required', 'integer', 'min:1'],
@@ -59,18 +57,15 @@ class CommentsController extends Controller
             'user_id' => $request->input('user_id'),
         ]);
 
-        // $datas=[];
-        // array_push($datas, $data, ['id'=>Auth::id()]);
+
 
         return new PostResource(Post::find($request->input('post_id')));
-        // return response()->json(['foo'=>'bar']);
+
     }
 
     public function edit(Request $request)
     {
-        // var_dump(json_decode($request->json()->all()));
 
-        // $data = $request->json()->all();
         $validator = Validator::make($request->all(), [
             'id' => ['required', 'integer', 'min:1'],
             'comment' => ['required', 'string', 'max:255'],

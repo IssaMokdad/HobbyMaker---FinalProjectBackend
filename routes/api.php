@@ -58,6 +58,8 @@ Route::group([
 Route::group([
     'middleware' => 'auth:api'
 ], function() {
+    
+    Route::post('user/save-geometry-position', 'UserController@saveGeometryPosition');
     Route::get('user/get-info', 'UserController@getUserInfo');
     Route::post('user/password-change', 'UserController@changePassword');
     Route::post('user/info-change', 'UserController@editUserInfo');
@@ -80,4 +82,13 @@ Route::group([
     Route::get('friend/get-pending-requests', 'FriendController@getPendingRequests');
     
     
+});
+
+//---------------------Notifications Api Routes----------------------------------------------
+
+Route::group([
+    'middleware' => 'auth:api'
+], function() {
+    Route::get('get-user-notifications', 'UserNotificationsController@showNotifications');
+    Route::get('mark-as-read', 'UserNotificationsController@markNotificationsAsRead');
 });

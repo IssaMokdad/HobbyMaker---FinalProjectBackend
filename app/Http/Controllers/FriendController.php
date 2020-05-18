@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Friend;
 use DB;
+use App\Events\MyEvent;
+use App\Notifications\AddRequest;
+use App\User;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -20,6 +23,15 @@ class FriendController extends Controller
         if ($validator->fails()) {
             return response()->json($validator->messages(), 419);
         }
+
+        $userSendToRequest = User::find($request->input('friend_id'));
+
+        $userThatSentRequest = User::find($request->input('user_id'));
+
+        $userSendToRequest->notify(new AddRequest($userThatSentRequest));
+
+        event(new MyEvent($userSendToRequest));
+
         $friend1 = Friend::create([
             'friend_id' => $request->input('friend_id'),
             'user_id' => $request->input('user_id'),

@@ -26,7 +26,7 @@ class User extends JsonResource
             'cover_photo'=>$this->cover_photo,
             'avatar'=>$this->avatar,
             'hobbies'=>$this->hobby,
-            'friends'=>$this->friend
+            'friends'=>$this->friend,
         ];
     }
 }
