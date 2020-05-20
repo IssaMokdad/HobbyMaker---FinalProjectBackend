@@ -74,10 +74,11 @@ Route::group([
 Route::group([
     'middleware' => 'auth:api'
 ], function() {
+    Route::get('friend/get-friends', 'FriendController@getFriends');
     Route::post('friend/add', 'FriendController@add');
     Route::post('friend/accept', 'FriendController@accept');
     Route::post('friend/remove', 'FriendController@removeFriend');
-    Route::get('friend/get-friends', 'FriendController@getFriends');
+    
     Route::get('friend/get-friend-requests', 'FriendController@getFriendRequests');
     Route::get('friend/get-pending-requests', 'FriendController@getPendingRequests');
     
@@ -91,4 +92,13 @@ Route::group([
 ], function() {
     Route::get('get-user-notifications', 'UserNotificationsController@showNotifications');
     Route::get('mark-as-read', 'UserNotificationsController@markNotificationsAsRead');
+});
+
+//---------------------Chat Api Routes----------------------------------------------
+
+Route::group([
+    'middleware' => 'auth:api'
+], function() {
+    Route::get('get-messages', 'ChatController@getMessages');
+    Route::post('send-message', 'ChatController@sendMessage');
 });

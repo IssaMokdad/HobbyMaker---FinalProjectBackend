@@ -31,7 +31,7 @@ class AddRequest extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return ['database', 'broadcast'];
+        return ['database'];
     }
 
     /**
@@ -63,12 +63,4 @@ class AddRequest extends Notification implements ShouldQueue
         ];
     }
 
-    public function toBroadcast($notifiable)
-    {
-        
-        return [
-            'message'=>$this->user->first_name . ' ' . $this->user->last_name . ' ' . 'added you.',
-            'user'=>$this->user
-        ];
-    }
 }

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Friend;
 use DB;
-use App\Events\MyEvent;
+use App\Events\AddRequestEvent;
 use App\Notifications\AddRequest;
 use App\User;
 use Illuminate\Http\Request;
@@ -30,7 +30,7 @@ class FriendController extends Controller
 
         $userSendToRequest->notify(new AddRequest($userThatSentRequest));
 
-        event(new MyEvent($userSendToRequest));
+        event(new AddRequestEvent($userSendToRequest, $userThatSentRequest));
 
         $friend1 = Friend::create([
             'friend_id' => $request->input('friend_id'),
