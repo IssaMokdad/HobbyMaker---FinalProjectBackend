@@ -51,6 +51,7 @@ class AuthController extends Controller
             'gender' => $request->gender,
             'birthday'=>$request->birthday,
             'password' => bcrypt($request->password),
+            'first_time_login' =>1,
             'activation_token' => Str::random(60)
         ]);
 
@@ -147,6 +148,7 @@ class AuthController extends Controller
             'message'      => __('auth.login_success'),
             'access_token' => $tokenResult->accessToken,
             'token_type' => 'Bearer',
+            'first_time_login'=>$user->first_time_login,
             'expires_at' => Carbon::parse($tokenResult->token->expires_at)->toDateTimeString()
         ]);
     }

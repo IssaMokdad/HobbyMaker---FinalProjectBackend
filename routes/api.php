@@ -58,7 +58,7 @@ Route::group([
 Route::group([
     'middleware' => 'auth:api'
 ], function() {
-    
+    Route::post('user/first-time-login', 'UserController@setFirstTimeLoginToFalse');
     Route::post('user/save-geometry-position', 'UserController@saveGeometryPosition');
     Route::get('user/get-info', 'UserController@getUserInfo');
     Route::post('user/password-change', 'UserController@changePassword');
@@ -91,7 +91,7 @@ Route::group([
     'middleware' => 'auth:api'
 ], function() {
     Route::get('get-user-notifications', 'UserNotificationsController@showNotifications');
-    Route::get('mark-as-read', 'UserNotificationsController@markNotificationsAsRead');
+    Route::post('mark-as-read', 'UserNotificationsController@markNotificationsAsRead');
 });
 
 //---------------------Chat Api Routes----------------------------------------------
@@ -99,6 +99,11 @@ Route::group([
 Route::group([
     'middleware' => 'auth:api'
 ], function() {
+    Route::get('get-message-notifications', 'ChatController@getAllUnreadMessagesForNotifications');
     Route::get('get-messages', 'ChatController@getMessages');
+    // Route::get('get-last-message', 'ChatController@getLastMessage');
+    Route::post('mark-messages-as-read', 'ChatController@markMessagesAsRead');
+    Route::post('mark-messages-as-read-per-user', 'ChatController@markMessagesAsRead');
+    Route::get('get-unread-messages', 'ChatController@getAllUnreadMessages');
     Route::post('send-message', 'ChatController@sendMessage');
 });

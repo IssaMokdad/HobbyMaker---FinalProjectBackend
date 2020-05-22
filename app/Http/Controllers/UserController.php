@@ -14,6 +14,13 @@ class UserController extends Controller
 {
     public function getUsersWithSameHobbyAndAddress(Request $request)
     {
+
+        $validator = Validator::make($request->all(), [
+            'user_id' => ['required', 'integer', 'min:1'],
+        ]);
+        if ($validator->fails()) {
+            return response()->json($validator->messages(), 419);
+        }
         //get the user
         //get the friends ids and add the authenticated user id to the array
         //get the users having common hobby who are at the same country and city
@@ -41,8 +48,31 @@ class UserController extends Controller
 
     public function getUserInfo(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'user-id' => ['required', 'integer', 'min:1'],
+        ]);
+        if ($validator->fails()) {
+            return response()->json($validator->messages(), 419);
+        }
+
         return new UserResource(User::find($request->input('user-id')));
     }
+
+    public function setFirstTimeLoginToFalse(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'user_id' => ['required', 'integer', 'min:1'],
+        ]);
+        if ($validator->fails()) {
+            return response()->json($validator->messages(), 419);
+        }
+
+        $user = User::find($request->input('user_id'));
+        $user->first_time_login=0;
+        $user->save();
+        return response()->json(['message' => 'success']);
+    }
+
 
     public function saveProfilePicture(Request $request)
     {
