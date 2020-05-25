@@ -12,19 +12,16 @@ use Validator;
 
 class UserController extends Controller
 {
+
     public function getUsersWithSameHobbyAndAddress(Request $request)
     {
 
-        $validator = Validator::make($request->all(), [
-            'user_id' => ['required', 'integer', 'min:1'],
-        ]);
-        if ($validator->fails()) {
-            return response()->json($validator->messages(), 419);
+        $validate = new User;
+
+        $error = $validate->validateUserRequest($request);
+        if($error){
+            return $error;
         }
-        //get the user
-        //get the friends ids and add the authenticated user id to the array
-        //get the users having common hobby who are at the same country and city
-        //exlude the friends ids and the authenticated user id from the result
         $user = User::find($request->input('user_id'));
 
         $friendsIds = array_column($user->friend->toArray(), 'friend_id');
@@ -39,40 +36,38 @@ class UserController extends Controller
             ->where('users.city', $user->city)
             ->whereIn('hobbies.hobby', $userHobbies)
             ->whereNotIn('users.id', $friendsIds)
-            ->select('users.id', 'users.birthday','users.longitude','users.latitude', 'hobbies.hobby', 'users.first_name', 'users.last_name', 'users.image')
+            ->select('users.id', 'users.birthday', 'users.longitude', 'users.latitude', 'hobbies.hobby', 'users.first_name', 'users.last_name', 'users.image')
             ->get();
+
         return response()->json(['data' => $users]);
     }
 
-
-
     public function getUserInfo(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'user-id' => ['required', 'integer', 'min:1'],
-        ]);
-        if ($validator->fails()) {
-            return response()->json($validator->messages(), 419);
+        $validate = new User;
+
+        $error = $validate->validateUserRequest($request);
+        if($error){
+            return $error;
         }
 
-        return new UserResource(User::find($request->input('user-id')));
+        return new UserResource(User::find($request->input('user_id')));
     }
 
     public function setFirstTimeLoginToFalse(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'user_id' => ['required', 'integer', 'min:1'],
-        ]);
-        if ($validator->fails()) {
-            return response()->json($validator->messages(), 419);
+        $validate = new User;
+
+        $error = $validate->validateUserRequest($request);
+        if($error){
+            return $error;
         }
 
         $user = User::find($request->input('user_id'));
-        $user->first_time_login=0;
+        $user->first_time_login = 0;
         $user->save();
         return response()->json(['message' => 'success']);
     }
-
 
     public function saveProfilePicture(Request $request)
     {
@@ -183,9 +178,6 @@ class UserController extends Controller
         $user = User::where('id', $request->input('user_id'))
             ->update(['birthday' => $request->input('birthday'), 'city' => $request->input('city'), 'country' => $request->input('country'), 'first_name' => $request->input('first_name'), 'last_name' => $request->input('last_name')]);
 
-        // $hobby = Hobby::where('user_id',$request->input('user_id'))
-        // ->update(['hobby'=>$request->input('hobby')]);
-
         if ($user && $hobby) {
             return response()->json(['message' => 'success']);
         } else {
@@ -196,9 +188,7 @@ class UserController extends Controller
 
     public function saveGeometryPosition(Request $request)
     {
-        // var_dump(json_decode($request->json()->all()));
 
-        // $data = $request->json()->all();
         $validator = Validator::make($request->all(), [
             'longitude' => ['required'],
             'latitude' => ['required'],

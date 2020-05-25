@@ -1,29 +1,31 @@
 <?php
 
 namespace App;
-use App\Post;
+
 use App\Comments;
-use App\Likes;
 use App\Friend;
 use App\Hobby;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Likes;
+use App\Post;
+use App\SavedPost;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Validator;
+
 class User extends Authenticatable
 {
     use Notifiable, HasApiTokens, SoftDeletes;
 
     protected $dates = ['deleted_at'];
-
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'first_name','country', 'city', 'last_name','active', 'gender','birthday', 'email', 'password','activation_token', 'avatar', 'longitude', 'latitude'
+        'first_name', 'country', 'city', 'last_name', 'active', 'gender', 'birthday', 'email', 'password', 'activation_token', 'avatar', 'longitude', 'latitude',
     ];
 
     /**
@@ -32,7 +34,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token', 'activation_token'
+        'password', 'token', 'active', 'remember_token', 'activation_token',
     ];
 
     /**
@@ -63,5 +65,25 @@ class User extends Authenticatable
     public function hobby()
     {
         return $this->hasMany(Hobby::class);
+    }
+
+    public function video()
+    {
+        return $this->hasMany(YoutubeVideos::class);
+    }
+
+    public function savedpost()
+    {
+        return $this->hasMany(SavedPost::class);
+    }
+
+    public function validateUserRequest($request)
+    {
+        $validator = Validator::make($request->all(), [
+            'user_id' => ['required', 'integer', 'min:1'],
+        ]);
+        if ($validator->fails()) {
+            return response()->json($validator->messages(), 419);
+        }
     }
 }

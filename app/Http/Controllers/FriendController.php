@@ -2,27 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Friend;
-use DB;
 use App\Events\AddRequestEvent;
+use App\Friend;
 use App\Notifications\AddRequest;
 use App\User;
+use DB;
 use Illuminate\Http\Request;
-use Validator;
 
 class FriendController extends Controller
 {
 
     public function add(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'friend_id' => ['required', 'integer', 'min:1'],
-            'user_id' => ['required', 'integer', 'min:1'],
-        ]);
 
-        if ($validator->fails()) {
-            return response()->json($validator->messages(), 419);
-        }
+        $validate = new Friend;
+
+        $validate->validateFriendRequest($request);
 
         $userSendToRequest = User::find($request->input('friend_id'));
 
@@ -51,12 +46,8 @@ class FriendController extends Controller
     public function getFriends(Request $request)
     {
 
-        $validator = Validator::make($request->all(), [
-            'user_id' => ['required', 'integer', 'min:1'],
-        ]);
-        if ($validator->fails()) {
-            return response()->json($validator->messages(), 419);
-        }
+        $validate = new User;
+        $validate->validateUserRequest($request);
 
         $users = DB::table('users')
             ->join('friends', 'users.id', '=', 'friends.friend_id')
@@ -69,13 +60,9 @@ class FriendController extends Controller
     public function removeFriend(Request $request)
     {
 
-        $validator = Validator::make($request->all(), [
-            'friend_id' => ['required', 'integer', 'min:1'],
-            'user_id' => ['required', 'integer', 'min:1'],
-        ]);
-        if ($validator->fails()) {
-            return response()->json($validator->messages(), 419);
-        }
+        $validate = new Friend;
+        $validate->validateFriendRequest($request);
+
         $friend1 = Friend::where('user_id', $request->input('user_id'))
             ->where('friend_id', $request->input('friend_id'))
             ->delete();
@@ -94,12 +81,8 @@ class FriendController extends Controller
     public function getFriendRequests(Request $request)
     {
 
-        $validator = Validator::make($request->all(), [
-            'user_id' => ['required', 'integer', 'min:1'],
-        ]);
-        if ($validator->fails()) {
-            return response()->json($validator->messages(), 419);
-        }
+        $validate = new User;
+        $validate->validateUserRequest($request);
 
         $users = DB::table('users')
             ->join('friends', 'users.id', '=', 'friends.friend_id')
@@ -112,12 +95,8 @@ class FriendController extends Controller
     public function getPendingRequests(Request $request)
     {
 
-        $validator = Validator::make($request->all(), [
-            'user_id' => ['required', 'integer', 'min:1'],
-        ]);
-        if ($validator->fails()) {
-            return response()->json($validator->messages(), 419);
-        }
+        $validate = new User;
+        $validate->validateUserRequest($request);
 
         $users = DB::table('users')
             ->join('friends', 'users.id', '=', 'friends.friend_id')
@@ -129,14 +108,10 @@ class FriendController extends Controller
 
     public function accept(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'friend_id' => ['required', 'integer', 'min:1'],
-            'user_id' => ['required', 'integer', 'min:1'],
-        ]);
 
-        if ($validator->fails()) {
-            return response()->json($validator->messages(), 419);
-        }
+        $validate = new Friend;
+        $validate->validateFriendRequest($request);
+
         $friend1 = Friend::where('user_id', $request->input('user_id'))
             ->where('friend_id', $request->input('friend_id'))
             ->update(['status' => 'accepted']);

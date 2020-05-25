@@ -4,7 +4,6 @@ namespace App\Events;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -42,12 +41,12 @@ class AddRequestEvent implements ShouldBroadcast
     {
         // This must always be an array. Since it will be parsed with json_encode()
         return [
-          'data' => ['message'=>$this->userThatSentRequest->first_name . ' ' . $this->userThatSentRequest->last_name . ' ' . 'added you.',
-          'user'=>$this->userThatSentRequest],
-          'type' => 'App\Notifications\AddRequest',
-          'notifiable_id'=>'i'
-  
-      ];
+            'data' => ['message' => $this->userThatSentRequest->first_name . ' ' . $this->userThatSentRequest->last_name . ' ' . 'added you.',
+                'user' => $this->userThatSentRequest],
+            'type' => 'App\Notifications\AddRequest',
+            'notifiable_id' => 'i',
+
+        ];
     }
 
     public function broadcastAs()

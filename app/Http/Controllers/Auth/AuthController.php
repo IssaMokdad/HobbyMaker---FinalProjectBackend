@@ -3,16 +3,16 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
-use Storage;
-use Avatar;
 use App\Notifications\SignupActivate;
 use App\Notifications\SignupActivated;
 use App\User;
-use Validator;
+use Avatar;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Storage;
 use Str;
+use Validator;
 
 class AuthController extends Controller
 {
@@ -28,42 +28,41 @@ class AuthController extends Controller
     public function signup(Request $request)
     {
 
-        $validator  =   Validator::make($request->all(),
-        [
-            'first_name' => 'required|string',
-            'last_name' => 'required|string',
-            'gender' => 'required|in:male,female',
-            'email' => 'required|string|email|unique:users',
-            'birthday' => 'required|date',
-            'password' => 'required|string|min:8'
-        ]
-    );
+        $validator = Validator::make($request->all(),
+            [
+                'first_name' => 'required|string',
+                'last_name' => 'required|string',
+                'gender' => 'required|in:male,female',
+                'email' => 'required|string|email|unique:users',
+                'birthday' => 'required|date',
+                'password' => 'required|string|min:8',
+            ]
+        );
 
-    if($validator->fails()) {
-        return response()->json(['Validation errors' => $validator->errors()]);
-    }
-
+        if ($validator->fails()) {
+            return response()->json(['Validation errors' => $validator->errors()]);
+        }
 
         $user = new User([
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'email' => $request->email,
             'gender' => $request->gender,
-            'birthday'=>$request->birthday,
+            'birthday' => $request->birthday,
             'password' => bcrypt($request->password),
-            'first_time_login' =>1,
-            'activation_token' => Str::random(60)
+            'first_time_login' => 1,
+            'activation_token' => Str::random(60),
         ]);
 
         $user->save();
 
         $avatar = Avatar::create($user->first_name)->getImageObject()->encode('png');
-        Storage::put('avatars/'.$user->id.'/avatar.png', (string) $avatar);
+        Storage::put('avatars/' . $user->id . '/avatar.png', (string) $avatar);
 
-            $user->notify(new SignupActivate($user));
+        $user->notify(new SignupActivate($user));
 
         return response()->json([
-            'message' => __('auth.signup_success')
+            'message' => __('auth.signup_success'),
         ], 201);
     }
 
@@ -81,7 +80,7 @@ class AuthController extends Controller
 
         if (!$user) {
             return response()->json([
-                'message' => __('auth.token_invalid')
+                'message' => __('auth.token_invalid'),
             ], 404);
         }
 
@@ -109,27 +108,27 @@ class AuthController extends Controller
     public function login(Request $request)
     {
 
-        $validator  =   Validator::make($request->all(),
-        [
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-            // 'remember_me' => 'boolean'
-        ]
-    );
+        $validator = Validator::make($request->all(),
+            [
+                'email' => 'required|string|email',
+                'password' => 'required|string',
+                // 'remember_me' => 'boolean'
+            ]
+        );
 
-    if($validator->fails()) {
-        return response()->json(['Validation errors' => $validator->errors()]);
-    }
-
+        if ($validator->fails()) {
+            return response()->json(['Validation errors' => $validator->errors()]);
+        }
 
         $credentials = request(['email', 'password']);
         $credentials['active'] = 1;
         $credentials['deleted_at'] = null;
 
-        if(!Auth::attempt($credentials))
+        if (!Auth::attempt($credentials)) {
             return response()->json([
-                'message' => __('auth.login_failed')
+                'message' => __('auth.login_failed'),
             ], 401);
+        }
 
         $user = $request->user();
 
@@ -142,14 +141,14 @@ class AuthController extends Controller
         $token->save();
 
         return response()->json([
-            'user_id' =>$user->id,
-            'first_name' =>$user->first_name,
+            'user_id' => $user->id,
+            'first_name' => $user->first_name,
             'last_name' => $user->last_name,
-            'message'      => __('auth.login_success'),
+            'message' => __('auth.login_success'),
             'access_token' => $tokenResult->accessToken,
             'token_type' => 'Bearer',
-            'first_time_login'=>$user->first_time_login,
-            'expires_at' => Carbon::parse($tokenResult->token->expires_at)->toDateTimeString()
+            'first_time_login' => $user->first_time_login,
+            'expires_at' => Carbon::parse($tokenResult->token->expires_at)->toDateTimeString(),
         ]);
     }
 
@@ -163,7 +162,7 @@ class AuthController extends Controller
         $request->user()->token()->revoke();
 
         return response()->json([
-            'message' => __('auth.logout_success')
+            'message' => __('auth.logout_success'),
         ]);
     }
 

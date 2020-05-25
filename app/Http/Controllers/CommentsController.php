@@ -15,7 +15,15 @@ class CommentsController extends Controller
     public function show(Request $request)
     {
 
-        return CommentResource::collection(Comments::where('post_id', $request->input('post-id'))->get());
+        $validator = Validator::make($request->all(), [
+            'post_id' => ['required', 'integer', 'min:1'],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->messages(), 419);
+        }
+
+        return CommentResource::collection(Comments::where('post_id', $request->input('post_id'))->get());
 
     }
 
@@ -57,8 +65,6 @@ class CommentsController extends Controller
             'user_id' => $request->input('user_id'),
         ]);
 
-
-
         return new PostResource(Post::find($request->input('post_id')));
 
     }
@@ -87,8 +93,6 @@ class CommentsController extends Controller
         } else {
             return response()->json(['message' => 'error']);
         }
-
-        
 
     }
 }

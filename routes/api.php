@@ -25,6 +25,9 @@ require __DIR__ . '/auth/passwordReset.php';
 Route::group([
     'middleware' => 'auth:api'
 ], function() {
+    Route::post('save-post', 'SavedPostController@savePost');
+    Route::get('get-saved-posts', 'SavedPostController@getSavedPost');
+    Route::post('unsave-post', 'SavedPostController@unsavePost');
     Route::post('post/create', 'PostController@add');
     Route::get('post/get-one-post', 'PostController@getOnePost');
     Route::get('post/get', 'PostController@get');
@@ -106,4 +109,15 @@ Route::group([
     Route::post('mark-messages-as-read-per-user', 'ChatController@markMessagesAsRead');
     Route::get('get-unread-messages', 'ChatController@getAllUnreadMessages');
     Route::post('send-message', 'ChatController@sendMessage');
+});
+
+//---------------------Youtube Videos Api Routes----------------------------------------------
+
+Route::group([
+    'middleware' => 'auth:api'
+], function() {
+
+    Route::post('save-video', 'YoutubeVideosController@saveVideo');
+    Route::post('unsave-video', 'YoutubeVideosController@unsaveVideo');
+
 });

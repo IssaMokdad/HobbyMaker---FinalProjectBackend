@@ -4,7 +4,6 @@ namespace App\Events;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -15,7 +14,7 @@ class RealTimeChat implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $message;
- 
+
     /**
      * Create a new event instance.
      *
@@ -41,8 +40,8 @@ class RealTimeChat implements ShouldBroadcast
     {
         // This must always be an array. Since it will be parsed with json_encode()
         return [
-          'message' => $this->message,
-      ];
+            'message' => $this->message,
+        ];
     }
 
     public function broadcastAs()

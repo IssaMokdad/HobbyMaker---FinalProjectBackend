@@ -5,26 +5,32 @@ namespace App\Http\Controllers;
 use App\Http\Resources\Post as PostResource;
 use App\Post;
 use App\User;
-use Validator;
-use Image;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
+use Image;
+use Validator;
 
 class PostController extends Controller
 {
 
     public function get(Request $request)
     {
-        //Get the latest posts of the authenticated user and his/her friends. Also, onEachBottomScroll, we send 5 more posts 
+        $validate = new User;
+        $validate->validateUserRequest($request);
+        //Get the latest posts of the authenticated user and his/her friends. Also, onEachBottomScroll in the frontend, we send 5 more posts
         $friendsIds = array_column(User::find($request->input('user_id'))->friend->toArray(), 'friend_id');
+
         $friendsIds[] = $request->input('user_id');
-        return PostResource::collection(Post::orderBy('id', 'desc')->whereIn('user_id', $friendsIds)->take($request->input('page')*5)->get());
+
+        return PostResource::collection(Post::orderBy('id', 'desc')->whereIn('user_id', $friendsIds)->take($request->input('page') * 5)->get());
 
     }
 
-    public function getUserPosts(Request $request){
+    public function getUserPosts(Request $request)
+    {
+        $validate = new User;
+        $validate->validateUserRequest($request);
         
-        return PostResource::collection(Post::orderBy('id', 'desc')->where('user_id', $request->input('user_id'))->take($request->input('page')*5)->get());
+        return PostResource::collection(Post::orderBy('id', 'desc')->where('user_id', $request->input('user_id'))->take($request->input('page') * 5)->get());
     }
 
     public function add(Request $request)
@@ -32,48 +38,31 @@ class PostController extends Controller
 
         if ($request->hasFile('image')) {
 
-
-
             $validator = Validator::make($request->all(), [
                 'content' => 'required',
                 'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 'user_id' => ['required', 'integer', 'min:1'],
             ]);
-    
+
             if ($validator->fails()) {
                 return response()->json($validator->messages(), 419);
             }
 
-
-
-
-            // $file = $request->file('image');
-            // $extension = $file->getClientOriginalExtension();
-            // $filename = time() . "." . $extension;
-            // $file->move('images/', $filename);
-
-            $filename = date('Y-m-d-H-i-s').'userid='.$request->input('user_id').'.'.$request->file('image')->getClientOriginalExtension();
-            Image::make($request->file('image')->getRealPath())->resize(468, 249)->save(public_path('images/'.$filename));
-            
-            // $thumbnailpath = public_path('storage/profile_images/thumbnail/'.$filenametostore);
-            // $img = Image::make($thumbnailpath)->resize(400, 150, function($constraint) {
-            //     $constraint->aspectRatio();
-            // });
-
+            $filename = date('Y-m-d-H-i-s') . 'userid=' . $request->input('user_id') . '.' . $request->file('image')->getClientOriginalExtension();
+            Image::make($request->file('image')->getRealPath())->resize(468, 249)->save(public_path('images/' . $filename));
 
             $post = Post::create([
                 'user_id' => $request->input('user_id'),
                 'content' => $request->input('content'),
                 'image' => $filename,
             ]);
-            return response()->json(['post' => $post]);} 
-            else {
+            return response()->json(['post' => $post]);} else {
 
             $validator = Validator::make($request->all(), [
                 'content' => 'required',
                 'user_id' => ['required', 'integer', 'min:1'],
             ]);
-    
+
             if ($validator->fails()) {
                 return response()->json($validator->messages(), 419);
             }
@@ -89,7 +78,6 @@ class PostController extends Controller
     public function edit(Request $request)
     {
         if ($request->hasFile('image')) {
-
 
             $validator = Validator::make($request->all(), [
                 'content' => 'required',
@@ -148,10 +136,9 @@ class PostController extends Controller
         }
         $post = Post::where('id', $request->input('post_id'))->where('user_id', $request->input('user_id'))
             ->delete();
-        if($post){
+        if ($post) {
             return response()->json(['message' => 'success']);
-        }
-        else{
+        } else {
             return response()->json(['message' => 'error']);
         }
     }

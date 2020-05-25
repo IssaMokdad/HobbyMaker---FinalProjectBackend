@@ -1,24 +1,20 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Http\Request;
+
+use App\Http\Resources\Post as PostResource;
 use App\Likes;
 use App\Post;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Resources\Post as PostResource;
+use Illuminate\Http\Request;
+
 class LikesController extends Controller
 {
-    public function add(Request $request){
+    public function add(Request $request)
+    {
 
-        $validator = Validator::make($request->all(), [
-            'post_id' => ['required', 'integer', 'min:1'],
-            'user_id' => ['required', 'integer', 'min:1'],
-        ]);
+        $validate = new Likes;
+        $validate->validateLikeRequest($request);
 
-        if ($validator->fails()) {    
-            return response()->json($validator->messages(), 419);
-        }
         $like = Likes::create([
             'post_id' => $request->input('post_id'),
             'user_id' => $request->input('user_id'),
@@ -27,18 +23,15 @@ class LikesController extends Controller
         return new PostResource(Post::find($request->input('post_id')));
     }
 
-    public function remove(Request $request){
+    public function remove(Request $request)
+    {
 
-        $validator = Validator::make($request->all(), [
-            'post_id' => ['required', 'integer', 'min:1'],
-            'user_id' => ['required', 'integer', 'min:1'],
-        ]);
-        if ($validator->fails()) {    
-            return response()->json($validator->messages(), 419);
-        }
-        Likes::where('user_id',$request->input('user_id'))
-               ->where('post_id', $request->input('post_id'))
-               ->delete();
+        $validate = new Likes;
+        $validate->validateLikeRequest($request);
+
+        Likes::where('user_id', $request->input('user_id'))
+            ->where('post_id', $request->input('post_id'))
+            ->delete();
         return new PostResource(Post::find($request->input('post_id')));
 
     }
