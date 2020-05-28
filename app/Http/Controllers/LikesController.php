@@ -11,10 +11,14 @@ class LikesController extends Controller
 {
     public function add(Request $request)
     {
-
         $validate = new Likes;
-        $validate->validateLikeRequest($request);
 
+        $error = $validate->validateLikeRequest($request);
+        if($error){
+            return $error;
+        }
+        
+        
         $like = Likes::create([
             'post_id' => $request->input('post_id'),
             'user_id' => $request->input('user_id'),
@@ -27,7 +31,11 @@ class LikesController extends Controller
     {
 
         $validate = new Likes;
-        $validate->validateLikeRequest($request);
+
+        $error = $validate->validateLikeRequest($request);
+        if($error){
+            return $error;
+        }
 
         Likes::where('user_id', $request->input('user_id'))
             ->where('post_id', $request->input('post_id'))

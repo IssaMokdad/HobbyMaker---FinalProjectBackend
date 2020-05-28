@@ -13,9 +13,14 @@ class SavedPostController extends Controller
     public function savePost(Request $request)
     {
 
+
         $validate = new SavedPost;
 
-        $validate->validateSavedPostRequest($request);
+        $error = $validate->validateSavedPostRequest($request);
+        if($error){
+            return $error;
+        }
+
 
         $post = SavedPost::create([
             'post_id' => $request->input('post_id'),
@@ -33,7 +38,10 @@ class SavedPostController extends Controller
 
         $validate = new SavedPost;
 
-        $validate->validateSavedPostRequest($request);
+        $error = $validate->validateSavedPostRequest($request);
+        if($error){
+            return $error;
+        }
 
         $post = SavedPost::where('user_id', $request->input('user_id'))
             ->where('post_id', $request->input('post_id'))
@@ -49,7 +57,11 @@ class SavedPostController extends Controller
     public function getSavedPost(Request $request)
     {
         $validate = new User;
-        $validate->validateUserRequest($request);
+
+        $error = $validate->validateUserRequest($request);
+        if($error){
+            return $error;
+        }
         //Get the saved posts details
         $savedPostsIds = array_column(User::find($request->input('user_id'))->savedPost->toArray(), 'post_id');
 

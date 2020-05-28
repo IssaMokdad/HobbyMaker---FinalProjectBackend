@@ -17,7 +17,11 @@ class ChatController extends Controller
 
         $validate = new User;
 
-        $validate->validateUserRequest($request);
+        $error = $validate->validateUserRequest($request);
+
+        if($error){
+            return $error;
+        }
 
         $unreadMessages = DB::select("select users.id, users.first_name, users.last_name, users.image, count(is_read) as unread
         from users JOIN messages ON users.id = messages.from and is_read = 0 and messages.to = " . $request->input('user_id') . "
@@ -32,7 +36,11 @@ class ChatController extends Controller
 
         $validate = new User;
 
-        $validate->validateUserRequest($request);
+        $error = $validate->validateUserRequest($request);
+
+        if($error){
+            return $error;
+        }
 
         $my_id = $request->input('user_id');
 
@@ -74,7 +82,11 @@ class ChatController extends Controller
 
         $validate = new User;
 
-        $validate->validateUserRequest($request);
+        $error = $validate->validateUserRequest($request);
+
+        if($error){
+            return $error;
+        }
 
         Message::where('to', $request->input('user_id'))->update(['is_read' => 1]);
 
@@ -86,7 +98,11 @@ class ChatController extends Controller
 
         //using the same method to validate request since they have the same input
         $validate = new Friend;
-        $validate->validateFriendRequest($request);
+
+        $error = $validate->validateFriendRequest($request);
+        if($error){
+            return $error;
+        }
 
         Message::where('to', $request->input('user_id'))
             ->where('from', $request->input('user_id'))
@@ -97,10 +113,13 @@ class ChatController extends Controller
 
     public function getMessages(Request $request)
     {
-
+        
         $validate = new Friend;
 
-        $validate->validateFriendRequest($request);
+        $error = $validate->validateFriendRequest($request);
+        if($error){
+            return $error;
+        }
 
         $my_id = $request->input('user_id');
         $user_id = $request->input('friend_id');

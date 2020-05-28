@@ -4,6 +4,7 @@ namespace App;
 
 use App\Comments;
 use App\Friend;
+use App\Events;
 use App\Hobby;
 use App\Likes;
 use App\Post;
@@ -77,6 +78,11 @@ class User extends Authenticatable
         return $this->hasMany(SavedPost::class);
     }
 
+    public function events()
+    {
+        return $this->hasMany(Events::class);
+    }
+
     public function validateUserRequest($request)
     {
         $validator = Validator::make($request->all(), [
@@ -85,5 +91,10 @@ class User extends Authenticatable
         if ($validator->fails()) {
             return response()->json($validator->messages(), 419);
         }
+    }
+
+    public function goings()
+    {
+        return $this->hasMany(Going::class);
     }
 }

@@ -9,9 +9,12 @@ class UserNotificationsController extends Controller
 {
     public function showNotifications(Request $request)
     {
-
         $validate = new User;
-        $validate->validateUserRequest($request);
+
+        $error =  $validate->validateUserRequest($request);
+        if($error){
+            return $error;
+        }
 
         $notifications = User::find($request->input('user_id'))->unreadNotifications;
 
@@ -23,7 +26,10 @@ class UserNotificationsController extends Controller
 
         $validate = new User;
 
-        $validate->validateUserRequest($request);
+        $error =  $validate->validateUserRequest($request);
+        if($error){
+            return $error;
+        }
 
         $notifications = User::find($request->input('user_id'))->unreadNotifications;
         $notifications->markAsRead();

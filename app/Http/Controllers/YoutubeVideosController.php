@@ -29,9 +29,13 @@ class YoutubeVideosController extends Controller
     }
     public function unsaveVideo(Request $request){
 
+
         $validate = new YoutubeVideos;
 
-        $validate->validateVideoRequest($request);
+        $error =  $validate->validateVideoRequest($request);
+        if($error){
+            return $error;
+        }    
 
         $video = YoutubeVideos::where('user_id', $request->input('user_id'))
             ->where('video_id', $request->input('video_id'))

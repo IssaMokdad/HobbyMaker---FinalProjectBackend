@@ -14,8 +14,15 @@ class PostController extends Controller
 
     public function get(Request $request)
     {
+
         $validate = new User;
-        $validate->validateUserRequest($request);
+
+        $error =  $validate->validateUserRequest($request);
+        if($error){
+            return $error;
+        }
+        
+       
         //Get the latest posts of the authenticated user and his/her friends. Also, onEachBottomScroll in the frontend, we send 5 more posts
         $friendsIds = array_column(User::find($request->input('user_id'))->friend->toArray(), 'friend_id');
 
@@ -28,7 +35,11 @@ class PostController extends Controller
     public function getUserPosts(Request $request)
     {
         $validate = new User;
-        $validate->validateUserRequest($request);
+
+        $error =  $validate->validateUserRequest($request);
+        if($error){
+            return $error;
+        }
         
         return PostResource::collection(Post::orderBy('id', 'desc')->where('user_id', $request->input('user_id'))->take($request->input('page') * 5)->get());
     }

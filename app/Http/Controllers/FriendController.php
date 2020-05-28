@@ -17,8 +17,11 @@ class FriendController extends Controller
 
         $validate = new Friend;
 
-        $validate->validateFriendRequest($request);
-
+        $error = $validate->validateFriendRequest($request);;
+        if($error){
+            return $error;
+        }
+       
         $userSendToRequest = User::find($request->input('friend_id'));
 
         $userThatSentRequest = User::find($request->input('user_id'));
@@ -47,8 +50,10 @@ class FriendController extends Controller
     {
 
         $validate = new User;
-        $validate->validateUserRequest($request);
-
+        $error = $validate->validateUserRequest($request);
+        if($error){
+            return $error;
+        }
         $users = DB::table('users')
             ->join('friends', 'users.id', '=', 'friends.friend_id')
             ->where('friends.status', 'accepted')
@@ -61,7 +66,11 @@ class FriendController extends Controller
     {
 
         $validate = new Friend;
-        $validate->validateFriendRequest($request);
+
+        $error = $validate->validateFriendRequest($request);;
+        if($error){
+            return $error;
+        }
 
         $friend1 = Friend::where('user_id', $request->input('user_id'))
             ->where('friend_id', $request->input('friend_id'))
@@ -82,7 +91,10 @@ class FriendController extends Controller
     {
 
         $validate = new User;
-        $validate->validateUserRequest($request);
+        $error = $validate->validateUserRequest($request);
+        if($error){
+            return $error;
+        }
 
         $users = DB::table('users')
             ->join('friends', 'users.id', '=', 'friends.friend_id')
@@ -96,7 +108,10 @@ class FriendController extends Controller
     {
 
         $validate = new User;
-        $validate->validateUserRequest($request);
+        $error = $validate->validateUserRequest($request);
+        if($error){
+            return $error;
+        }
 
         $users = DB::table('users')
             ->join('friends', 'users.id', '=', 'friends.friend_id')
@@ -110,7 +125,11 @@ class FriendController extends Controller
     {
 
         $validate = new Friend;
-        $validate->validateFriendRequest($request);
+
+        $error = $validate->validateFriendRequest($request);;
+        if($error){
+            return $error;
+        }
 
         $friend1 = Friend::where('user_id', $request->input('user_id'))
             ->where('friend_id', $request->input('friend_id'))

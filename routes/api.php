@@ -121,3 +121,14 @@ Route::group([
     Route::post('unsave-video', 'YoutubeVideosController@unsaveVideo');
 
 });
+
+//---------------------Events Api Routes----------------------------------------------
+
+Route::group([
+    'middleware' => 'auth:api'
+], function() {
+    Route::get('get-user-events', 'EventsController@getUserEvents');
+    Route::post('event-create', 'EventsController@createEvent');
+    Route::post('event-edit', 'EventsController@editEvent');
+    Route::post('event-delete', 'EventsController@deleteEvent');
+});
