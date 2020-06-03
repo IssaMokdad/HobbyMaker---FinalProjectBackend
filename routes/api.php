@@ -61,10 +61,13 @@ Route::group([
 Route::group([
     'middleware' => 'auth:api'
 ], function() {
+    Route::post('pusher/auth', 'TestController@authenticate');
+    Route::get('users/get-recommendations-anywhere', 'UserController@getUsersWithSameHobbyAnywhere');
     Route::post('user/first-time-login', 'UserController@setFirstTimeLoginToFalse');
     Route::post('user/save-geometry-position', 'UserController@saveGeometryPosition');
     Route::get('user/get-info', 'UserController@getUserInfo');
     Route::post('user/password-change', 'UserController@changePassword');
+    Route::post('user/save-bio', 'UserController@saveBio');
     Route::post('user/info-change', 'UserController@editUserInfo');
     Route::get('users/get-recommendations', 'UserController@getUsersWithSameHobbyAndAddress');
     Route::get('user/get-info', 'UserController@getUserInfo');
@@ -131,4 +134,19 @@ Route::group([
     Route::post('event-create', 'EventsController@createEvent');
     Route::post('event-edit', 'EventsController@editEvent');
     Route::post('event-delete', 'EventsController@deleteEvent');
+});
+
+
+//---------------------Going Api Routes----------------------------------------------
+
+Route::group([
+    'middleware' => 'auth:api'
+], function() {
+   
+    Route::get('get-user-events-going-to', 'GoingController@getGoingToEvents');
+    Route::post('accept-event-invitation', 'GoingController@acceptInvitation');
+    Route::post('refuse-event-invitation', 'GoingController@refuseInvitation');
+    Route::get('get-user-events-invitations', 'GoingController@getInvitations');
+    Route::post('invite-friend', 'GoingController@invite');
+    Route::get('not-invited-friends', 'GoingController@getPeopleNotInvitedToEvent');
 });

@@ -13,10 +13,16 @@ use Illuminate\Support\Facades\Broadcast;
 |
 */
 
+
 Broadcast::channel('my-channel.{id}', function ($id) {
     return true;
 });
-
+Broadcast::channel('my-channel1', function ($id = null) {
+    return true;
+});
+// Broadcast::channel('video-channel', function ($id) {
+//     return true;
+// });
 // Broadcast::channel('my-channel', function () {
 //     return true;
 // });

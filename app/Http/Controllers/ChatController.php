@@ -6,6 +6,7 @@ use App\Events\RealTimeChat;
 use App\Message;
 use App\User;
 use DB;
+use DateTime;
 use App\Friend;
 use Illuminate\Http\Request;
 use Validator;
@@ -156,6 +157,7 @@ class ChatController extends Controller
         $data = new Message();
         $data->from = $from;
         $data->to = $to;
+        $data->created_at=new DateTime();
         $data->message = $message;
         $data->is_read = 0; // message will be unread when sending message
         $data->save();

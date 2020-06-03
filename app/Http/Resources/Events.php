@@ -26,7 +26,7 @@ class Events extends JsonResource
         'image'=>$this->image,
         'end_time'=>$this->end_time,
         'location'=>$this->location,
-        'going'=>Going::where('event_id', $this->id)->join('users', 'users.id', '=', 'goings.user_id')->get(),
+        'going'=>Going::where('event_id', $this->id)->where('status','going')->join('users', 'users.id', '=', 'goings.user_id')->get(),
         // 'going'=>$this->goings->where('status', 'going'),
 
         ];

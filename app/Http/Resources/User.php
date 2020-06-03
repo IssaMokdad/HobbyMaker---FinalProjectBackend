@@ -28,7 +28,8 @@ class User extends JsonResource
             'hobbies'=>$this->hobby,
             'friends'=>$this->friend,
             'videos'=>$this->video,
-            'saved_posts'=>$this->savedPost
+            'saved_posts'=>$this->savedPost,
+            'bio'=>$this->bio
         ];
     }
 }
