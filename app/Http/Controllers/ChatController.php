@@ -157,7 +157,7 @@ class ChatController extends Controller
         $data = new Message();
         $data->from = $from;
         $data->to = $to;
-        $data->created_at=new DateTime();
+        // $data->created_at=new DateTime();
         $data->message = $message;
         $data->is_read = 0; // message will be unread when sending message
         $data->save();

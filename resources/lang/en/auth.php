@@ -27,6 +27,6 @@ return [
     'email_signup_activate_line2' => 'Thank you for using our application!',
 
     'email_signup_activated_subject' => 'Welcome to :appName',
-    'email_signup_activated_line1' => 'You have completed your registration! your account is active.',
+    'email_signup_activated_line1' => 'You have verified your registration! Your account is active.',
     'email_signup_activated_line2' => 'Now you can be login.'
 ];

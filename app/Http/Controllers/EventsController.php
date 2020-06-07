@@ -168,4 +168,20 @@ class EventsController extends Controller
                 return response()->json(['message' => 'error']);
             }
     }}
+
+    public function getPublicEvents(Request $request){
+        $validate = new User;
+
+        $error = $validate->validateUserRequest($request);
+        if($error){
+            return $error;
+        }
+        return EventResource::collection(Events::orderBy('id', 'desc')->where('privacy','public')->get());
+        // $events = User::find($request->input('user_id'))->events;
+        // if ($events) {
+        //     return response()->json(['events' => $events]);
+        // } else {
+        //     return response()->json(['message' => 'error']);
+        // } 
+    }
 }

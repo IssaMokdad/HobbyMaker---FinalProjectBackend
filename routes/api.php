@@ -61,7 +61,6 @@ Route::group([
 Route::group([
     'middleware' => 'auth:api'
 ], function() {
-    Route::post('pusher/auth', 'TestController@authenticate');
     Route::get('users/get-recommendations-anywhere', 'UserController@getUsersWithSameHobbyAnywhere');
     Route::post('user/first-time-login', 'UserController@setFirstTimeLoginToFalse');
     Route::post('user/save-geometry-position', 'UserController@saveGeometryPosition');
@@ -130,7 +129,9 @@ Route::group([
 Route::group([
     'middleware' => 'auth:api'
 ], function() {
+    Route::post('join-event', 'GoingController@joinPublicEvent');
     Route::get('get-user-events', 'EventsController@getUserEvents');
+    Route::get('get-public-events', 'EventsController@getPublicEvents');
     Route::post('event-create', 'EventsController@createEvent');
     Route::post('event-edit', 'EventsController@editEvent');
     Route::post('event-delete', 'EventsController@deleteEvent');

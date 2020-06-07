@@ -20,6 +20,9 @@ Broadcast::channel('my-channel.{id}', function ($id) {
 Broadcast::channel('my-channel1', function ($id = null) {
     return true;
 });
+Broadcast::channel('my-channel2', function ($id = null) {
+    return true;
+});
 // Broadcast::channel('video-channel', function ($id) {
 //     return true;
 // });

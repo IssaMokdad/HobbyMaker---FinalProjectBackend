@@ -65,7 +65,7 @@ class UserController extends Controller
             ->where('users.city', $request->input('city'))
             ->whereIn('hobbies.hobby', $userHobbies)
             ->whereNotIn('users.id', $friendsIds)
-            ->select('users.id', 'users.birthday', 'users.longitude', 'users.latitude', 'hobbies.hobby', 'users.first_name', 'users.last_name', 'users.image')
+            ->select('users.id','users.birthday', 'users.longitude', 'users.latitude', 'hobbies.hobby', 'users.first_name', 'users.last_name', 'users.image')
             ->get();
 
         return response()->json(['data' => $users]);
@@ -111,7 +111,8 @@ class UserController extends Controller
         }
 
         $filename = date('Y-m-d-H-i-s') . 'userid=' . $request->input('user_id') . '.' . $request->file('image')->getClientOriginalExtension();
-        Image::make($request->file('image')->getRealPath())->resize(150, 150)->save(public_path('images/' . $filename));
+        Image::make($request->file('image')->getRealPath())->save(public_path('images/' . $filename));
+        // Image::make($request->file('image')->getRealPath())->resize(150, 150)->save(public_path('images/' . $filename));
 
         $user = User::where('id', $request->input('user_id'))
             ->update(['image' => $filename]);
@@ -137,8 +138,8 @@ class UserController extends Controller
         }
 
         $filename = date('Y-m-d-H-i-s') . 'userid=' . $request->input('user_id') . '.' . $request->file('cover_photo')->getClientOriginalExtension();
-        Image::make($request->file('cover_photo')->getRealPath())->resize(1158, 250)->save(public_path('images/' . $filename));
-
+        Image::make($request->file('cover_photo')->getRealPath())->save(public_path('images/' . $filename));
+        // resize(1158, 250)->
         $user = User::where('id', $request->input('user_id'))
             ->update(['cover_photo' => $filename]);
         if ($user) {
