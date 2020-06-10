@@ -105,6 +105,67 @@ class AuthController extends Controller
      * @return [string] token_type
      * @return [string] expires_at
      */
+
+    public function socialLogin(Request $request){
+        $validator = Validator::make($request->all(),
+        [
+            'email' => 'required|string|email'
+            // 'remember_me' => 'boolean'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['Validation errors' => $validator->errors()]);
+        }
+
+        $user = User::where('email',$request->input('email'))->first();
+
+        if($user){
+            // $user = $request->user();
+            $tokenResult = $user->createToken('Personal Access Token');
+            $token = $tokenResult->token;
+            $token->save();
+            return response()->json([
+                'user_id' => $user->id,
+                'first_name' => $user->first_name,
+                'last_name' => $user->last_name,
+                'message' => __('auth.login_success'),
+                'access_token' => $tokenResult->accessToken,
+                'token_type' => 'Bearer',
+                'first_time_login' => $user->first_time_login,
+                'expires_at' => Carbon::parse($tokenResult->token->expires_at)->toDateTimeString(),
+            ]);
+        }
+        else{
+            $user = new User([
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'email' => $request->email,
+                'first_time_login'=>1,
+                'active'=>1,
+                'activation_token'=>'ku',
+                'gender' => 'male',
+                'birthday' => '2010-02-02',
+                'password' => bcrypt('windowslive'),
+
+            ]);
+    
+            $user->save();
+            // $user1 = $request->user();
+            $tokenResult = $user->createToken('Personal Access Token');
+            $token = $tokenResult->token;
+            $token->save();
+            return response()->json([
+                'user_id' => $user->id,
+                'first_name' => $user->first_name,
+                'last_name' => $user->last_name,
+                'message' => __('auth.login_success'),
+                'access_token' => $tokenResult->accessToken,
+                'token_type' => 'Bearer',
+                'first_time_login' => $user->first_time_login,
+                'expires_at' => Carbon::parse($tokenResult->token->expires_at)->toDateTimeString(),
+            ]);
+        }
+        
+    }
     public function login(Request $request)
     {
 
@@ -116,9 +177,12 @@ class AuthController extends Controller
             ]
         );
 
+        
+
         if ($validator->fails()) {
             return response()->json(['Validation errors' => $validator->errors()]);
         }
+
 
         $credentials = request(['email', 'password']);
         $credentials['active'] = 1;
@@ -134,11 +198,11 @@ class AuthController extends Controller
 
         $tokenResult = $user->createToken('Personal Access Token');
         $token = $tokenResult->token;
-
+        $token->save();
         // if ($request->remember_me)
         //     $token->expires_at = Carbon::now()->addWeeks(1);
 
-        $token->save();
+
 
         return response()->json([
             'user_id' => $user->id,

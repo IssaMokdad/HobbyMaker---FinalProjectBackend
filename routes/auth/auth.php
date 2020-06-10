@@ -6,6 +6,7 @@ Route::group([
     'prefix' => 'auth'
 ], function () {
     Route::post('login', 'AuthController@login');
+    Route::post('social-login', 'AuthController@socialLogin');
     Route::post('signup', 'AuthController@signup');
     Route::get('signup/activate/{token}', 'AuthController@signupActivate');
 
