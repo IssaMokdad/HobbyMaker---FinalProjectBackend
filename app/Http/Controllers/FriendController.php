@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Events\AddRequestEvent;
+use App\Events\AcceptFriendRequestEvent;
 use App\Friend;
 use App\Notifications\AddRequest;
+use App\Notifications\AcceptFriendRequest;
 use App\User;
 use DB;
 use Illuminate\Http\Request;
@@ -138,6 +140,16 @@ class FriendController extends Controller
             ->where('friend_id', $request->input('user_id'))
             ->update(['status' => 'accepted']);
         if ($friend1 && $friend2) {
+            $userThatSentRequest = User::find($request->input('friend_id'));
+
+            $userSendToRequest = User::find($request->input('user_id'));
+
+            event(new AcceptFriendRequestEvent($userThatSentRequest, $userSendToRequest));
+            
+            $userThatSentRequest->notify(new AcceptFriendRequest($userSendToRequest));
+
+            
+
             return response()->json(['message' => 'success']);} else {
             return response()->json(['data' => 'error']);
         }

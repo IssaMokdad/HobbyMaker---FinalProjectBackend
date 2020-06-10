@@ -24,6 +24,7 @@ class EventsController extends Controller
             'end_date' => 'required|date',
             'description' => 'required|string',
             'location' => 'required|string',
+            'privacy'=>'required|string'
         ]
     );
 
@@ -43,6 +44,7 @@ class EventsController extends Controller
                 'start_date' => $request->input('start_date'),
                 'name'=>$request->input('name'),
                 'end_date' => $request->input('end_date'),
+                'privacy'=> $request->input('privacy'),
                 'image' => $filename,
             ]);
             // $event->fresh;
@@ -101,6 +103,7 @@ class EventsController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'end_date' => 'required|date',
             'description' => 'required|string',
+            'privacy'=>'required|string',
             'location' => 'required|string',
         ]
     );
@@ -122,6 +125,7 @@ class EventsController extends Controller
                 'start_date' => $request->input('start_date'),
                 'name'=>$request->input('name'),
                 'end_date' => $request->input('end_date'),
+                'privacy'=> $request->input('privacy'),
                 'image' => $filename,
             ]);
             // $event->fresh;
@@ -143,6 +147,7 @@ class EventsController extends Controller
             'end_date' => 'required|date',
             'description' => 'required|string',
             'location' => 'required|string',
+            'privacy'=>'required|string'
         ]
     );
 
@@ -176,7 +181,7 @@ class EventsController extends Controller
         if($error){
             return $error;
         }
-        return EventResource::collection(Events::orderBy('id', 'desc')->where('privacy','public')->get());
+        return EventResource::collection(Events::orderBy('id', 'desc')->where('user_id','!=',$request->input('user_id'))->where('privacy','public')->get());
         // $events = User::find($request->input('user_id'))->events;
         // if ($events) {
         //     return response()->json(['events' => $events]);

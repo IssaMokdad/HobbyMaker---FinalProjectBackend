@@ -22,11 +22,11 @@ return [
     'token_invalid' => 'This activation token is invalid.',
 
     'email_signup_activate_subject' => 'Confirm your account',
-    'email_signup_activate_line1' => 'Thanks for signup! Please before you begin, you must confirm your account.',
+    'email_signup_activate_line1' => 'Thanks for signing up! Please before you begin, you must confirm your account.',
     'email_signup_activate_action' => 'Confirm Account',
     'email_signup_activate_line2' => 'Thank you for using our application!',
 
-    'email_signup_activated_subject' => 'Welcome to :appName',
+    'email_signup_activated_subject' => 'Welcome to HobbyMaker',
     'email_signup_activated_line1' => 'You have verified your registration! Your account is active.',
     'email_signup_activated_line2' => 'Now you can be login.'
 ];

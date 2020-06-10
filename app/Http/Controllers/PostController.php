@@ -24,7 +24,7 @@ class PostController extends Controller
         
        
         //Get the latest posts of the authenticated user and his/her friends. Also, onEachBottomScroll in the frontend, we send 5 more posts
-        $friendsIds = array_column(User::find($request->input('user_id'))->friend->toArray(), 'friend_id');
+        $friendsIds = array_column(User::find($request->input('user_id'))->friend->where('status', 'accepted')->toArray(), 'friend_id');
 
         $friendsIds[] = $request->input('user_id');
 
