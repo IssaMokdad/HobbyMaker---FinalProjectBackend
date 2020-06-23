@@ -179,7 +179,7 @@ class UserController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            'birthday' => ['required', 'date'],
+            // 'birthday' => ['required', 'date'],
             'country' => ['required', 'string', 'max:50'],
             'city' => ['required', 'string', 'max:50'],
             'first_name' => ['required', 'string', 'max:50'],

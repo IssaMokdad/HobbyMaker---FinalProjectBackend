@@ -109,7 +109,9 @@ class GoingController extends Controller
         }
     }
     public function joinPublicEvent(Request $request){
-        $validator = Validator::make($request->all(), [
+        $data = request()->json()->all();
+
+        $validator = Validator::make($data, [
             'user_id' => ['required', 'integer', 'min:1'],
             'event_id' => ['required', 'integer', 'min:1'],
         ]);
@@ -118,7 +120,7 @@ class GoingController extends Controller
             return response()->json($validator->messages(), 419);
         }
 
-        $going = Going::create(['user_id'=>$request->input('user_id'), 'event_id'=>$request->input('event_id')]);
+        $going = Going::create(['user_id'=>$data['user_id'], 'event_id'=>$data['event_id']]);
         if ($going) {
 
             return response()->json(['message' => 'success']);

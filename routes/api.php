@@ -80,6 +80,7 @@ Route::group([
     'middleware' => 'auth:api'
 ], function() {
     Route::get('friend/get-friends', 'FriendController@getFriends');
+    Route::get('/search', 'FriendController@search');
     Route::post('friend/add', 'FriendController@add');
     Route::post('friend/accept', 'FriendController@accept');
     Route::post('friend/remove', 'FriendController@removeFriend');
@@ -125,13 +126,13 @@ Route::group([
 });
 
 //---------------------Events Api Routes----------------------------------------------
-
+Route::post('get-public-events', 'EventsController@getPublicEvents');
 Route::group([
     'middleware' => 'auth:api'
 ], function() {
-    Route::post('join-event', 'GoingController@joinPublicEvent');
+
     Route::get('get-user-events', 'EventsController@getUserEvents');
-    Route::get('get-public-events', 'EventsController@getPublicEvents');
+    
     Route::post('event-create', 'EventsController@createEvent');
     Route::post('event-edit', 'EventsController@editEvent');
     Route::post('event-delete', 'EventsController@deleteEvent');
@@ -139,7 +140,7 @@ Route::group([
 
 
 //---------------------Going Api Routes----------------------------------------------
-
+Route::post('join-event', 'GoingController@joinPublicEvent');
 Route::group([
     'middleware' => 'auth:api'
 ], function() {

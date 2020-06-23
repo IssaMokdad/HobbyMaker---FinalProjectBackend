@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\AddRequestEvent;
 use App\Events\AcceptFriendRequestEvent;
 use App\Friend;
+use Validator;
 use App\Notifications\AddRequest;
 use App\Notifications\AcceptFriendRequest;
 use App\User;
@@ -105,7 +106,20 @@ class FriendController extends Controller
             ->get();
         return response()->json(['data' => $users]);
     }
+    public function search(Request $request){
 
+        $validator = Validator::make($request->all(), [
+            'search_value' => ['required', 'string'],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->messages(), 419);
+       }
+       
+        $results = User::where('first_name', 'like', '%' . $request->input('search_value') . '%')
+                        ->orWhere('last_name', 'like', '%' . $request->input('search_value') . '%')->get();
+                        return response()->json(['data' => $results]);
+    }
     public function getPendingRequests(Request $request)
     {
 

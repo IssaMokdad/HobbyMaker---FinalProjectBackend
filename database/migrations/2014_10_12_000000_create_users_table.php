@@ -17,7 +17,6 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('first_name');
             $table->string('last_name');
-            $table->date('birthday');
             $table->string('avatar')->default('avatar.png');
             $table->enum('gender', array('male', 'female'));
             $table->string('email')->unique();
@@ -26,6 +25,7 @@ class CreateUsersTable extends Migration
             $table->boolean('active')->default(false);
             $table->softDeletes();
             $table->string('password');
+            $table->date('birthday');
             $table->rememberToken();
             $table->timestamps();
         });
