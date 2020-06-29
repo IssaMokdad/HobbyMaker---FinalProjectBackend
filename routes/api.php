@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 | routes are loaded by the RouteServiceProvider within a group which
 | is assigned the "api" middleware group. Enjoy building your API!
 |
-*/
+ */
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
@@ -23,8 +23,8 @@ require __DIR__ . '/auth/passwordReset.php';
 
 //--------------------Posts Api Routes-----------------------------------------
 Route::group([
-    'middleware' => 'auth:api'
-], function() {
+    'middleware' => 'auth:api',
+], function () {
     Route::post('save-post', 'SavedPostController@savePost');
     Route::get('get-saved-posts', 'SavedPostController@getSavedPost');
     Route::post('unsave-post', 'SavedPostController@unsavePost');
@@ -39,8 +39,8 @@ Route::group([
 //--------------------Likes Api Routes-----------------------------------------------
 
 Route::group([
-    'middleware' => 'auth:api'
-], function() {
+    'middleware' => 'auth:api',
+], function () {
     Route::post('like/create', 'LikesController@add');
     Route::post('like/remove', 'LikesController@remove');
 });
@@ -48,8 +48,8 @@ Route::group([
 //--------------------Comments Api Routes---------------------------------------------
 
 Route::group([
-    'middleware' => 'auth:api'
-], function() {
+    'middleware' => 'auth:api',
+], function () {
     Route::post('comment/create', 'CommentsController@create');
     Route::get('comment/show', 'CommentsController@show');
     Route::post('comment/remove', 'CommentsController@remove');
@@ -59,8 +59,8 @@ Route::group([
 //---------------------Users Api Routes-----------------------------------------------
 
 Route::group([
-    'middleware' => 'auth:api'
-], function() {
+    'middleware' => 'auth:api',
+], function () {
     Route::get('users/get-recommendations-anywhere', 'UserController@getUsersWithSameHobbyAnywhere');
     Route::post('user/first-time-login', 'UserController@setFirstTimeLoginToFalse');
     Route::post('user/save-geometry-position', 'UserController@saveGeometryPosition');
@@ -77,25 +77,24 @@ Route::group([
 //---------------------Friends Api Routes----------------------------------------------
 
 Route::group([
-    'middleware' => 'auth:api'
-], function() {
+    'middleware' => 'auth:api',
+], function () {
     Route::get('friend/get-friends', 'FriendController@getFriends');
     Route::get('/search', 'FriendController@search');
     Route::post('friend/add', 'FriendController@add');
     Route::post('friend/accept', 'FriendController@accept');
     Route::post('friend/remove', 'FriendController@removeFriend');
-    
+
     Route::get('friend/get-friend-requests', 'FriendController@getFriendRequests');
     Route::get('friend/get-pending-requests', 'FriendController@getPendingRequests');
-    
-    
+
 });
 
 //---------------------Notifications Api Routes----------------------------------------------
 
 Route::group([
-    'middleware' => 'auth:api'
-], function() {
+    'middleware' => 'auth:api',
+], function () {
     Route::get('get-user-notifications', 'UserNotificationsController@showNotifications');
     Route::post('mark-as-read', 'UserNotificationsController@markNotificationsAsRead');
 });
@@ -103,11 +102,10 @@ Route::group([
 //---------------------Chat Api Routes----------------------------------------------
 
 Route::group([
-    'middleware' => 'auth:api'
-], function() {
+    'middleware' => 'auth:api',
+], function () {
     Route::get('get-message-notifications', 'ChatController@getAllUnreadMessagesForNotifications');
     Route::get('get-messages', 'ChatController@getMessages');
-    // Route::get('get-last-message', 'ChatController@getLastMessage');
     Route::post('mark-messages-as-read', 'ChatController@markMessagesAsRead');
     Route::post('mark-messages-as-read-per-user', 'ChatController@markMessagesAsRead');
     Route::get('get-unread-messages', 'ChatController@getAllUnreadMessages');
@@ -117,8 +115,8 @@ Route::group([
 //---------------------Youtube Videos Api Routes----------------------------------------------
 
 Route::group([
-    'middleware' => 'auth:api'
-], function() {
+    'middleware' => 'auth:api',
+], function () {
 
     Route::post('save-video', 'YoutubeVideosController@saveVideo');
     Route::post('unsave-video', 'YoutubeVideosController@unsaveVideo');
@@ -126,25 +124,26 @@ Route::group([
 });
 
 //---------------------Events Api Routes----------------------------------------------
+
 Route::post('get-public-events', 'EventsController@getPublicEvents');
 Route::group([
-    'middleware' => 'auth:api'
-], function() {
+    'middleware' => 'auth:api',
+], function () {
 
     Route::get('get-user-events', 'EventsController@getUserEvents');
-    
+
     Route::post('event-create', 'EventsController@createEvent');
     Route::post('event-edit', 'EventsController@editEvent');
     Route::post('event-delete', 'EventsController@deleteEvent');
 });
 
-
 //---------------------Going Api Routes----------------------------------------------
+
 Route::post('join-event', 'GoingController@joinPublicEvent');
 Route::group([
-    'middleware' => 'auth:api'
-], function() {
-   
+    'middleware' => 'auth:api',
+], function () {
+
     Route::get('get-user-events-going-to', 'GoingController@getGoingToEvents');
     Route::post('accept-event-invitation', 'GoingController@acceptInvitation');
     Route::post('refuse-event-invitation', 'GoingController@refuseInvitation');

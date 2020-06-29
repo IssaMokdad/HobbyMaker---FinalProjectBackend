@@ -111,8 +111,7 @@ class UserController extends Controller
         }
 
         $filename = date('Y-m-d-H-i-s') . 'userid=' . $request->input('user_id') . '.' . $request->file('image')->getClientOriginalExtension();
-        Image::make($request->file('image')->getRealPath())->save(public_path('images/' . $filename));
-        // Image::make($request->file('image')->getRealPath())->resize(150, 150)->save(public_path('images/' . $filename));
+        Image::make($request->file('image')->getRealPath())->resize(150, 150)->save(public_path('images/' . $filename));
 
         $user = User::where('id', $request->input('user_id'))
             ->update(['image' => $filename]);
@@ -138,8 +137,7 @@ class UserController extends Controller
         }
 
         $filename = date('Y-m-d-H-i-s') . 'userid=' . $request->input('user_id') . '.' . $request->file('cover_photo')->getClientOriginalExtension();
-        Image::make($request->file('cover_photo')->getRealPath())->save(public_path('images/' . $filename));
-        // resize(1158, 250)->
+        Image::make($request->file('cover_photo')->getRealPath())->resize(1158, 250)->save(public_path('images/' . $filename));
         $user = User::where('id', $request->input('user_id'))
             ->update(['cover_photo' => $filename]);
         if ($user) {
@@ -179,7 +177,6 @@ class UserController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            // 'birthday' => ['required', 'date'],
             'country' => ['required', 'string', 'max:50'],
             'city' => ['required', 'string', 'max:50'],
             'first_name' => ['required', 'string', 'max:50'],

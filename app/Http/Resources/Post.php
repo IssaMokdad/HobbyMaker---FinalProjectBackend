@@ -20,7 +20,7 @@ class Post extends JsonResource
             'title' => $this->title,
             'image' => $this->image,
             'content' => $this->content,
-            'created_at' => $this->created_at,
+            'created_at4' => $this->created_at,
             'updated_at' => $this->updated_at,
             'user' => $this->user,
             'likes' => $this->likes,
